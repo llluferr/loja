@@ -1,9 +1,11 @@
 package br.com.fiap;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -24,8 +26,8 @@ public class PrimaryController implements Initializable {
     // conexao (servidor, usuario, senha, base)
     String servidor = "oracle.fiap.com.br";
     //String baseDeDados = "";
-    String username = "RM94526";
-    String senha = "271003";
+    String username = "RM93205";
+    String senha = "120804";
     String url = "jdbc:oracle:thin:@" + servidor + ":1521:orcl";
     
     public void salvar(){
@@ -34,6 +36,16 @@ public class PrimaryController implements Initializable {
 
         try{
            var conexao = conectar();
+           Statement comando = conexao.createStatement();
+           String sql = String.format( "INSERT INTO T_DDD_LOJA_USUARIO (ID, NOME, EMAIL, SENHA, PERFIL) VALUES" +
+                        "(SEQ_USUARIO.nextval, '%s', '%s', '%s', '%s')",
+                        usuario.getNome(),
+                        usuario.getEmail(),
+                        usuario.getSenha(),
+                        usuario.getPerfil()
+           );
+
+           comando.execute(sql);
            conexao.close();
         }catch(SQLException e){
             e.printStackTrace();
@@ -63,4 +75,7 @@ public class PrimaryController implements Initializable {
         choiceBoxPerfil.getItems().addAll("Vendedor", "Gerente", "Administrador");  
     }
 
+    public void abrirListaDeUsuarios() throws IOException{
+        App.setRoot("secondary");
+    }
 }
